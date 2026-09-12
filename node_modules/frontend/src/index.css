@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body { 
+    @apply bg-inv-bg text-inv-text font-sans;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  * { @apply border-inv-border; }
+}
+
+@layer components {
+  .stat-card {
+    @apply bg-inv-surface border border-inv-border rounded-lg p-5 relative overflow-hidden;
+  }
+  .stat-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-5;
+    background: radial-gradient(circle at top right, currentColor, transparent 60%);
+  }
+  .panel {
+    @apply bg-inv-surface border border-inv-border rounded-lg;
+  }
+  .panel-header {
+    @apply px-5 py-4 border-b border-inv-border flex items-center justify-between;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-inv-red hover:bg-inv-red-bright text-white text-sm font-medium rounded-md transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-inv-muted hover:text-inv-text hover:bg-inv-surface2 text-sm rounded-md transition-colors;
+  }
+  .badge-fact { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold bg-inv-surface2 text-inv-text border border-inv-border; }
+  .badge-correlated { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold bg-inv-red-deep text-inv-red-bright border border-inv-red; }
+  .badge-inference { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold bg-amber-950 text-amber-500 border border-amber-900; }
+  .badge-unknown { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-mono font-semibold bg-inv-surface2 text-inv-muted border border-inv-border; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--tw-colors-inv-bg, #070708); }
+::-webkit-scrollbar-thumb { background: var(--tw-colors-inv-border, #292a30); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tw-colors-inv-surface2, #17181c); }
+
+/* Pulse animation for severity indicators */
+@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.pulse-red { animation: pulse-red 2s ease-in-out infinite; }
+
+/* Scan line effect for loading */
+@keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(400%); } }
