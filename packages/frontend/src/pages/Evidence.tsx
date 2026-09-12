@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Globe, Lock, FolderOpen, Cpu, Wifi, Mail, File as FileIcon, ShieldCheck, Copy, Plus, X } from 'lucide-react';
@@ -43,6 +43,9 @@ export const Evidence: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadType, setUploadType] = useState('file');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchEvidence = useCallback(() => {
     if (id) {
@@ -55,15 +58,32 @@ export const Evidence: React.FC = () => {
     fetchEvidence();
   }, [fetchEvidence]);
 
-  const handleDrop = async (e: React.DragEvent) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    if (!id) return;
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      await api.uploadEvidence(id, file, uploadType);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      setSelectedFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleAcquire = async () => {
+    if (!id || !selectedFile) return;
+    setIsUploading(true);
+    try {
+      await api.uploadEvidence(id, selectedFile, uploadType);
       fetchEvidence();
       setIsModalOpen(false);
+      setSelectedFile(null);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -227,19 +247,40 @@ export const Evidence: React.FC = () => {
               </div>
 
               <div 
-                className={`mt-4 p-8 border-2 border-dashed rounded text-center transition-colors ${isDragging ? 'border-inv-red bg-inv-red/10' : 'border-inv-border2 hover:border-inv-muted bg-inv-bg'}`}
+                className={`mt-4 p-8 border-2 border-dashed rounded text-center cursor-pointer transition-colors ${isDragging ? 'border-inv-red bg-inv-red/10' : 'border-inv-border2 hover:border-inv-muted bg-inv-bg'}`}
                 onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
               >
-                <div className="text-inv-text font-bold mb-1">Drop artifact file here</div>
-                <div className="text-xs text-inv-muted">Supported: .json .log .csv .evtx .pcap</div>
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  ref={fileInputRef} 
+                  onChange={handleFileSelect} 
+                />
+                {selectedFile ? (
+                  <div className="text-inv-red-bright font-mono text-sm font-bold truncate">
+                    {selectedFile.name}
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-inv-text font-bold mb-1">Click or drop artifact file here</div>
+                    <div className="text-xs text-inv-muted">Supported: .json .log .csv .evtx .pcap</div>
+                  </>
+                )}
               </div>
             </div>
 
             <div className="p-4 border-t border-inv-border bg-inv-surface2 flex gap-3 justify-end">
-              <button onClick={() => setIsModalOpen(false)} className="px-4 py-2 text-xs font-bold text-inv-muted hover:text-white transition-colors">CANCEL</button>
-              <button className="px-4 py-2 bg-inv-red hover:bg-inv-red-bright text-white text-xs font-bold rounded transition-colors">ACQUIRE</button>
+              <button onClick={() => { setIsModalOpen(false); setSelectedFile(null); }} className="px-4 py-2 text-xs font-bold text-inv-muted hover:text-white transition-colors">CANCEL</button>
+              <button 
+                onClick={handleAcquire}
+                disabled={!selectedFile || isUploading}
+                className={`px-4 py-2 text-white text-xs font-bold rounded transition-colors ${!selectedFile || isUploading ? 'bg-inv-border cursor-not-allowed text-inv-muted' : 'bg-inv-red hover:bg-inv-red-bright'}`}
+              >
+                {isUploading ? 'ACQUIRING...' : 'ACQUIRE'}
+              </button>
             </div>
           </div>
         </div>
