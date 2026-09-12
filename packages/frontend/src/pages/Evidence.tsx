@@ -42,6 +42,7 @@ export const Evidence: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [importSource, setImportSource] = useState('file');
   const [uploadType, setUploadType] = useState('file');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -225,59 +226,71 @@ export const Evidence: React.FC = () => {
               <div>
                 <label className="block text-xs font-bold text-inv-muted mb-2">Import Source</label>
                 <div className="space-y-2 text-sm text-inv-text">
-                  <label className="flex items-center gap-2 opacity-50"><input type="radio" disabled /> Live System Acquisition</label>
-                  <label className="flex items-center gap-2 opacity-50"><input type="radio" disabled /> Disk Image / Memory Dump</label>
-                  <label className="flex items-center gap-2"><input type="radio" checked readOnly className="accent-inv-red" /> Artifact File (Log / Export)</label>
+                  <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"><input type="radio" name="source" value="live" checked={importSource === 'live'} onChange={(e) => setImportSource(e.target.value)} className="accent-inv-red" /> Live System Acquisition</label>
+                  <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"><input type="radio" name="source" value="disk" checked={importSource === 'disk'} onChange={(e) => setImportSource(e.target.value)} className="accent-inv-red" /> Disk Image / Memory Dump</label>
+                  <label className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors"><input type="radio" name="source" value="file" checked={importSource === 'file'} onChange={(e) => setImportSource(e.target.value)} className="accent-inv-red" /> Artifact File (Log / Export)</label>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-inv-muted mb-2">Evidence Type</label>
-                <select value={uploadType} onChange={e => setUploadType(e.target.value)} className="w-full bg-inv-bg border border-inv-border rounded p-2 text-sm text-white focus:outline-none focus:border-inv-red">
-                  {Object.keys(TYPE_ICONS).filter(k => k !== 'unknown').map(k => (
-                    <option key={k} value={k}>{k.toUpperCase()}</option>
-                  ))}
-                  <option value="unknown">OTHER / UNKNOWN</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-inv-muted mb-2">Description</label>
-                <input type="text" placeholder="Optional description..." className="w-full bg-inv-bg border border-inv-border rounded p-2 text-sm text-white focus:outline-none focus:border-inv-red" />
-              </div>
-
-              <div 
-                className={`mt-4 p-8 border-2 border-dashed rounded text-center cursor-pointer transition-colors ${isDragging ? 'border-inv-red bg-inv-red/10' : 'border-inv-border2 hover:border-inv-muted bg-inv-bg'}`}
-                onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  ref={fileInputRef} 
-                  onChange={handleFileSelect} 
-                />
-                {selectedFile ? (
-                  <div className="text-inv-red-bright font-mono text-sm font-bold truncate">
-                    {selectedFile.name}
+              {importSource === 'file' ? (
+                <>
+                  <div>
+                    <label className="block text-xs font-bold text-inv-muted mb-2">Evidence Type</label>
+                    <select value={uploadType} onChange={e => setUploadType(e.target.value)} className="w-full bg-inv-bg border border-inv-border rounded p-2 text-sm text-white focus:outline-none focus:border-inv-red">
+                      {Object.keys(TYPE_ICONS).filter(k => k !== 'unknown').map(k => (
+                        <option key={k} value={k}>{k.toUpperCase()}</option>
+                      ))}
+                      <option value="unknown">OTHER / UNKNOWN</option>
+                    </select>
                   </div>
-                ) : (
-                  <>
-                    <div className="text-inv-text font-bold mb-1">Click or drop artifact file here</div>
-                    <div className="text-xs text-inv-muted">Supported: .json .log .csv .evtx .pcap</div>
-                  </>
-                )}
-              </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-inv-muted mb-2">Description</label>
+                    <input type="text" placeholder="Optional description..." className="w-full bg-inv-bg border border-inv-border rounded p-2 text-sm text-white focus:outline-none focus:border-inv-red" />
+                  </div>
+
+                  <div 
+                    className={`mt-4 p-8 border-2 border-dashed rounded text-center cursor-pointer transition-colors ${isDragging ? 'border-inv-red bg-inv-red/10' : 'border-inv-border2 hover:border-inv-muted bg-inv-bg'}`}
+                    onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      ref={fileInputRef} 
+                      onChange={handleFileSelect} 
+                    />
+                    {selectedFile ? (
+                      <div className="text-inv-red-bright font-mono text-sm font-bold truncate">
+                        {selectedFile.name}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-inv-text font-bold mb-1">Click or drop artifact file here</div>
+                        <div className="text-xs text-inv-muted">Supported: .json .log .csv .evtx .pcap</div>
+                      </>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="mt-4 p-8 border border-inv-border rounded text-center bg-inv-surface2">
+                  <Globe size={32} className="mx-auto text-inv-muted mb-3 opacity-50" />
+                  <div className="text-sm font-bold text-white tracking-wide uppercase">Requires Enterprise Agent</div>
+                  <div className="text-xs text-inv-muted mt-2 max-w-[250px] mx-auto leading-relaxed">
+                    {importSource === 'live' ? 'Live System Acquisition' : 'Disk Image Parsing'} requires a deployed EDR agent or an active direct network connection to the target asset.
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="p-4 border-t border-inv-border bg-inv-surface2 flex gap-3 justify-end">
-              <button onClick={() => { setIsModalOpen(false); setSelectedFile(null); }} className="px-4 py-2 text-xs font-bold text-inv-muted hover:text-white transition-colors">CANCEL</button>
+              <button onClick={() => { setIsModalOpen(false); setSelectedFile(null); setImportSource('file'); }} className="px-4 py-2 text-xs font-bold text-inv-muted hover:text-white transition-colors">CANCEL</button>
               <button 
                 onClick={handleAcquire}
-                disabled={!selectedFile || isUploading}
-                className={`px-4 py-2 text-white text-xs font-bold rounded transition-colors ${!selectedFile || isUploading ? 'bg-inv-border cursor-not-allowed text-inv-muted' : 'bg-inv-red hover:bg-inv-red-bright'}`}
+                disabled={importSource !== 'file' || !selectedFile || isUploading}
+                className={`px-4 py-2 text-white text-xs font-bold rounded transition-colors ${importSource !== 'file' || !selectedFile || isUploading ? 'bg-inv-border cursor-not-allowed text-inv-muted' : 'bg-inv-red hover:bg-inv-red-bright'}`}
               >
                 {isUploading ? 'ACQUIRING...' : 'ACQUIRE'}
               </button>
