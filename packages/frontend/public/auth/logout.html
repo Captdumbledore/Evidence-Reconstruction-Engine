@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RECONSTRUCT | Session Terminated</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #090304;
+      --bg-secondary: #14090b;
+      --bg-tertiary: #1f0e11;
+      --border-color: #3b161b;
+      --text-main: #fcf0f2;
+      --text-muted: #a3828a;
+      --accent-red: #ff2a4b;
+      --accent-red-hover: #ff4d6d;
+      --accent-crimson: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(135deg, rgba(255, 42, 75, 0.25), rgba(185, 28, 28, 0.1));
+      border: 1px solid var(--accent-red);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 20px rgba(255, 42, 75, 0.25);
+    }
+
+    .brand-logo svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: var(--accent-red);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text-main);
+    }
+
+    .brand-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .auth-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .card-description {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .audit-badge {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-crimson));
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(255, 42, 75, 0.3);
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, var(--accent-red-hover), var(--accent-red));
+      box-shadow: 0 4px 20px rgba(255, 42, 75, 0.45);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="brand-header">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+      </div>
+      <h1 class="brand-title">RECONSTRUCT</h1>
+      <p class="brand-subtitle">Evidence Recreation Engine & Investigation Platform</p>
+    </div>
+
+    <div class="auth-card">
+      <h2 class="card-title">Session Ended</h2>
+      <p class="card-description">You have been successfully and securely logged out of the RECONSTRUCT Evidence Engine.</p>
+
+      <div class="audit-badge">
+        Audit Log ID: AUD-LOGOUT-SUCCESS<br>
+        Tokens Revoked • Cache Cleared
+      </div>
+
+      <a href="login.html" class="btn-submit">Sign In Again</a>
+    </div>
+  </div>
+
+</body>
+</html>
