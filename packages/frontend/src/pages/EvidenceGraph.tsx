@@ -53,6 +53,7 @@ export const EvidenceGraph: React.FC = () => {
   }, [id, setNodes, setEdges]);
 
   const onNodeClick = useCallback((_: any, node: Node) => setSelectedNode(node), []);
+  const onPaneClick = useCallback(() => setSelectedNode(null), []);
 
   return (
     <div className="flex h-full bg-inv-bg relative">
@@ -80,6 +81,7 @@ export const EvidenceGraph: React.FC = () => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
           fitView
           className="bg-inv-bg"
         >

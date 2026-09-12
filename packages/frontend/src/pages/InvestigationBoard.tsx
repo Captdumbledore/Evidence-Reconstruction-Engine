@@ -44,6 +44,7 @@ const InvestigationBoardInner: React.FC = () => {
   const [theory, setTheory] = useState<any>(null); // For legacy
   const [findings, setFindings] = useState<any[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedNode, setSelectedNode] = useState<any>(null);
   const [allEvents, setAllEvents] = useState<any[]>([]);
   const [showAllEvents, setShowAllEvents] = useState(false);
   const [highlightedIds, setHighlightedIds] = useState<string[]>([]);
@@ -281,7 +282,23 @@ const InvestigationBoardInner: React.FC = () => {
   }, []);
   
   const onNodeClick = useCallback((_: any, node: Node) => {
-    setSelectedEvent(node.data);
+    if (node.type === 'PHASE') {
+      setSelectedEvent(null);
+      setSelectedNode(null);
+      return;
+    }
+    if (node.type === 'ENTITY' || node.type === 'EVIDENCE') {
+      setSelectedNode(node);
+      setSelectedEvent(null);
+    } else {
+      setSelectedEvent(node.data);
+      setSelectedNode(null);
+    }
+  }, []);
+
+  const onPaneClick = useCallback(() => {
+    setSelectedEvent(null);
+    setSelectedNode(null);
   }, []);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -353,6 +370,7 @@ const InvestigationBoardInner: React.FC = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeClick={onNodeClick}
+          onPaneClick={onPaneClick}
           onDragOver={onDragOver}
           onDrop={onDrop}
           nodeTypes={nodeTypes}
@@ -390,8 +408,19 @@ const InvestigationBoardInner: React.FC = () => {
           </div>
         )}
 
-        <ClueDrawer caseId={id!} nodes={nodes} onEventSelect={setSelectedEvent} onInvestigate={setHighlightedIds} />
-        <TheoryPanel theory={theory} selectedEvent={selectedEvent} findings={findings} onReevaluate={handleReevaluate} isAnalyzing={isAnalyzing} />
+        <ClueDrawer caseId={id!} nodes={nodes} onEventSelect={(ev) => { setSelectedEvent(ev); setSelectedNode(null); }} onInvestigate={setHighlightedIds} />
+        <TheoryPanel 
+          theory={theory} 
+          selectedNode={selectedNode}
+          selectedEvent={selectedEvent} 
+          findings={findings} 
+          onReevaluate={handleReevaluate} 
+          isAnalyzing={isAnalyzing} 
+          onCloseDetail={() => {
+            setSelectedEvent(null);
+            setSelectedNode(null);
+          }}
+        />
         <TimelineStrip />
       </div>
     </div>

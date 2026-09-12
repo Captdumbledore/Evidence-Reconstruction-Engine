@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle, HelpCircle, ArrowLeft, Shield } from 'lucide-react';
+import { AlertTriangle, CheckCircle, HelpCircle, ArrowLeft, Shield, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { api } from '../../lib/api';
 
@@ -13,13 +13,18 @@ const EVENT_COLORS: Record<string, string> = {
   default: 'bg-[#8b8d94]'
 };
 
-export const TheoryPanel = ({ theory: initialTheory, selectedNode, selectedEvent, findings = [], onReevaluate, isAnalyzing }: any) => {
+export const TheoryPanel = ({ theory: initialTheory, selectedNode, selectedEvent, findings = [], onReevaluate, isAnalyzing, onCloseDetail }: any) => {
   const [selectedTheory, setSelectedTheory] = useState<any>(null);
   const [statusMap, setStatusMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (selectedNode || selectedEvent) setSelectedTheory(null);
   }, [selectedNode, selectedEvent]);
+
+  const handleClose = () => {
+    setSelectedTheory(null);
+    if (onCloseDetail) onCloseDetail();
+  };
 
   if (!selectedNode && !selectedEvent && findings.length === 0 && !initialTheory) return null;
 
@@ -40,14 +45,21 @@ export const TheoryPanel = ({ theory: initialTheory, selectedNode, selectedEvent
       <div className="absolute right-4 top-4 w-80 bg-inv-surface border border-inv-border rounded-lg shadow-2xl flex flex-col z-10 overflow-hidden">
         <div className="p-3 bg-inv-surface2 border-b border-inv-border flex items-center justify-between">
           <h3 className="font-mono text-xs font-bold tracking-wider text-inv-text uppercase">EVENT DETAIL</h3>
+          <button 
+            onClick={handleClose} 
+            className="text-inv-muted hover:text-white p-1 rounded hover:bg-inv-surface transition-colors"
+            title="Close & return to theories"
+          >
+            <X size={14} />
+          </button>
         </div>
         <div className="p-4 flex-1 overflow-y-auto space-y-4">
           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold text-white border border-inv-border2" style={{ backgroundColor: color }}>
-            {selectedEvent.event_type}
+            {selectedEvent.event_type || selectedEvent.source_type || 'EVENT'}
           </div>
           
           <div className="text-white text-sm font-semibold leading-relaxed">
-            {selectedEvent.description}
+            {selectedEvent.description || selectedEvent.title || 'No description provided'}
           </div>
           
           <div className="space-y-1.5 pt-2 border-t border-inv-border2">
@@ -61,7 +73,7 @@ export const TheoryPanel = ({ theory: initialTheory, selectedNode, selectedEvent
             </div>
             <div className="text-xs text-inv-muted">
               <span className="font-bold text-inv-text uppercase inline-block w-24">SOURCE:</span>
-              {selectedEvent.source_type}
+              {selectedEvent.source_type || 'N/A'}
             </div>
             <div className="text-xs text-inv-muted flex items-center">
               <span className="font-bold text-inv-text uppercase inline-block w-24">CONFIDENCE:</span>
@@ -93,8 +105,17 @@ export const TheoryPanel = ({ theory: initialTheory, selectedNode, selectedEvent
     return (
       <div className="absolute right-4 top-4 w-80 bg-inv-surface border border-inv-border rounded-lg shadow-2xl flex flex-col z-10 overflow-hidden">
         <div className="p-3 bg-inv-surface2 border-b border-inv-border flex items-center justify-between">
-          <h3 className="font-mono text-xs font-bold tracking-wider text-inv-text uppercase">Node Details</h3>
-          <span className="text-xs font-mono font-bold text-inv-muted">{selectedNode.data?.entityType}</span>
+          <div className="flex items-center gap-2">
+            <h3 className="font-mono text-xs font-bold tracking-wider text-inv-text uppercase">NODE DETAIL</h3>
+            <span className="text-xs font-mono font-bold text-inv-muted">{selectedNode.data?.nodeType || selectedNode.data?.entityType || selectedNode.type}</span>
+          </div>
+          <button 
+            onClick={handleClose} 
+            className="text-inv-muted hover:text-white p-1 rounded hover:bg-inv-surface transition-colors"
+            title="Close & return to theories"
+          >
+            <X size={14} />
+          </button>
         </div>
         <div className="p-4 flex-1 overflow-y-auto space-y-4">
           <div className="text-white text-sm font-semibold">{selectedNode.data?.label}</div>
