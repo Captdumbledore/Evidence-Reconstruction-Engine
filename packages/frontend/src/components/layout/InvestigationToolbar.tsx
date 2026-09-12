@@ -43,6 +43,22 @@ export const InvestigationToolbar: React.FC = () => {
           </NavLink>
         ))}
       </nav>
+
+      <div className="mt-auto pb-4">
+        <button 
+          onClick={() => {
+            window.location.href = '/auth/logout.html';
+          }}
+          className="w-10 h-10 flex items-center justify-center rounded-md text-inv-muted hover:text-white hover:bg-inv-red-deep/30 hover:border hover:border-inv-red/30 transition-colors group relative"
+          title="Sign Out"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
     </aside>
   );
 };

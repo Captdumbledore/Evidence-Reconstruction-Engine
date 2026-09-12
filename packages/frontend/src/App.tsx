@@ -11,6 +11,11 @@ import { Questions } from './pages/Questions';
 import { Reports } from './pages/Reports';
 
 export const App: React.FC = () => {
+  if (!localStorage.getItem('reconstruct_auth')) {
+    window.location.href = '/auth/login.html';
+    return null;
+  }
+
   return (
     <BrowserRouter>
       <Routes>

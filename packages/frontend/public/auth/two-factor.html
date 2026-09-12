@@ -261,7 +261,8 @@
 
     function handleOtp(event) {
       event.preventDefault();
-      window.location.href = '/cases/CASE-001';
+      localStorage.setItem('reconstruct_auth', '1');
+      window.location.href = '/';
     }
   </script>
 </body>
